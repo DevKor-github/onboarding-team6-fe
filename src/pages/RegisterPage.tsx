@@ -2,13 +2,31 @@ import backgroundImage from '../assets/images/background.jpg';
 import { IoClose, IoLink } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { RegisterPayload, AuthResponse } from '../api/types';
+import { registerUser } from '../api/auth';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [fileName, setFileName] = useState(''); // 파일명 상태 추가
+  const [bio, setBio] = useState('');
+  const [fileName, setFileName] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const mutation = useMutation<AuthResponse, Error, RegisterPayload>({
+    mutationFn: registerUser,
+    onSuccess: (data: AuthResponse) => {
+      console.log('회원가입 성공:', data);
+      navigate('/chattinglist');
+    },
+    onError: (error: Error) => {
+      console.error('회원가입 실패:', error);
+    },
+  });
+
+  const { mutate, isError } = mutation;
 
   const handleClose = () => {
     navigate('/');
@@ -16,7 +34,7 @@ const RegisterPage = () => {
 
   const handleFileUploadClick = () => {
     if (fileInputRef.current) {
-      fileInputRef.current.click(); // 파일 선택 창 열기
+      fileInputRef.current.click();
     }
   };
 
@@ -27,6 +45,21 @@ const RegisterPage = () => {
     }
   };
 
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const profilePicture = 'S3에서 받아온 링크'; // S3 파일 업로드 후 링크를 사용해야 합니다.
+
+    const payload: RegisterPayload = {
+      username,
+      password,
+      profilePicture,
+      bio,
+    };
+
+    mutate(payload);
+  };
+
   const isPasswordMatch = password === confirmPassword;
 
   return (
@@ -34,7 +67,6 @@ const RegisterPage = () => {
       className="flex items-center justify-center h-screen bg-cover bg-center"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      {/* Close Icon */}
       <IoClose
         className="absolute top-[20px] right-[20px] text-[32px] text-black cursor-pointer"
         onClick={handleClose}
@@ -44,27 +76,26 @@ const RegisterPage = () => {
         <h1 className="font-8extrabold text-[18px] text-black mb-[5px]">
           회원가입
         </h1>
-        <form className="w-full">
+        <form className="w-full" onSubmit={handleSubmit}>
           <input
             type="text"
             placeholder="닉네임"
             className="font-6semibold text-[18px] w-full p-2 border-2 rounded-[10px] border-[#ccc] bg-transparent mb-[5px] text-black"
-          />
-          <input
-            type="text"
-            placeholder="아이디"
-            className="font-6semibold text-[18px] w-full p-2 border-2 rounded-[10px] border-[#ccc] bg-transparent mb-[5px] text-black"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
           <input
             type="password"
             placeholder="비밀번호"
             className="font-6semibold text-[18px] w-full p-2 border-2 rounded-[10px] border-[#ccc] bg-transparent mb-[5px] text-black"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <input
             type="password"
             placeholder="비밀번호 확인"
             className="font-6semibold text-[18px] w-full p-2 border-2 rounded-[10px] border-[#ccc] bg-transparent mb-[5px] text-black"
+            value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
           {confirmPassword && (
@@ -78,6 +109,18 @@ const RegisterPage = () => {
                 : '비밀번호가 일치하지 않습니다!'}
             </p>
           )}
+          <input
+            type="text"
+            placeholder="한줄 소개"
+            className="font-6semibold text-[18px] w-full p-2 border-2 rounded-[10px] border-[#ccc] bg-transparent mb-[5px] text-black"
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="잔고"
+            className="font-6semibold text-[18px] w-full p-2 border-2 rounded-[10px] border-[#ccc] bg-transparent mb-[5px] text-black"
+          />
           <div
             className="flex flex-row items-center font-6semibold text-[18px] w-full rounded-[10px] bg-[#ccc] text-white text-left p-2 mb-[5px]"
             onClick={handleFileUploadClick}
@@ -102,6 +145,11 @@ const RegisterPage = () => {
           >
             회원가입
           </button>
+          {isError && (
+            <p className="font-6semibold text-[18px] text-red-500 text-center">
+              회원가입에 실패했습니다.
+            </p>
+          )}
         </form>
       </div>
     </div>

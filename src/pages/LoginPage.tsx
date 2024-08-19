@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import backgroundImage from '../assets/images/background.jpg';
+import { LoginPayload } from '../api/types';
+import { loginUser } from '../api/auth';
 
 const LoginPage = () => {
   const messages = [
@@ -26,6 +28,10 @@ const LoginPage = () => {
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -34,6 +40,25 @@ const LoginPage = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setError(null);
+
+    const loginData: LoginPayload = {
+      username,
+      password,
+    };
+
+    try {
+      const response = await loginUser(loginData);
+      console.log('로그인 성공:', response);
+      navigate('/chattinglist');
+    } catch (error: any) {
+      console.error('로그인 실패:', error.message);
+      setError('로그인에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
 
   return (
     <div
@@ -51,16 +76,20 @@ const LoginPage = () => {
         <h1 className="font-8extrabold text-[18px] text-black mb-[5px]">
           입장하기
         </h1>
-        <form className="w-full">
+        <form className="w-full" onSubmit={handleSubmit}>
           <input
             type="text"
-            placeholder="아이디"
+            placeholder="닉네임"
             className="font-6semibold text-[18px] w-full p-2 border-2 rounded-[10px] border-[#ccc] bg-transparent mb-[5px] text-black"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
           <input
             type="password"
             placeholder="비밀번호"
             className="font-6semibold text-[18px] w-full p-2 border-2 rounded-[10px] border-[#ccc] bg-transparent mb-[5px] text-black"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <button
             type="submit"
@@ -68,6 +97,11 @@ const LoginPage = () => {
           >
             로그인
           </button>
+          {error && (
+            <p className="font-6semibold text-[18px] text-red-500 text-center">
+              {error}
+            </p>
+          )}
         </form>
         <Link
           to="/register"

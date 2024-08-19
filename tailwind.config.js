@@ -15,6 +15,12 @@ export default {
         '1thin': ['Freesentation-1Thin', 'sans-serif'],
         title: ['SangSangRock', 'sans-serif'],
       },
+      backgroundColor: {
+        DEFAULT: '#ffffff', // 기본 배경색을 흰색으로 설정
+      },
+      textColor: {
+        DEFAULT: '#000000', // 기본 텍스트 색상을 검정색으로 설정
+      },
     },
   },
   plugins: [],
