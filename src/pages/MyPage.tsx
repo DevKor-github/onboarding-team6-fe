@@ -4,12 +4,23 @@ import { IoSettingsSharp } from 'react-icons/io5';
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { UserProfileResponse } from '../api/types';
 import { getUserProfile } from '../api/user';
+import TransactionEditModal from '../components/TransactionEditModal';
 
 const MyPage = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfileResponse | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -110,7 +121,13 @@ const MyPage = () => {
             <h1 className="font-4regular text-[12px] text-[#aaa]">
               2024.08.21
             </h1>
-            <FaTrash className="text-[14px] text-[#aaa]" />
+            <div className="flex ml-auto items-center">
+              <MdEdit
+                className="text-[16px] text-[#aaa]"
+                onClick={handleOpenModal}
+              />
+              <FaTrash className="text-[14px] text-[#aaa] ml-[10px]" />
+            </div>
           </div>
         </div>
       </div>
@@ -125,7 +142,13 @@ const MyPage = () => {
             <h1 className="font-4regular text-[12px] text-[#aaa]">
               2024.08.21
             </h1>
-            <FaTrash className="text-[14px] text-[#aaa]" />
+            <div className="flex ml-auto items-center">
+              <MdEdit
+                className="text-[16px] text-[#aaa]"
+                onClick={handleOpenModal}
+              />
+              <FaTrash className="text-[14px] text-[#aaa] ml-[10px]" />
+            </div>
           </div>
         </div>
       </div>
@@ -140,16 +163,24 @@ const MyPage = () => {
             <h1 className="font-4regular text-[12px] text-[#aaa]">
               2024.08.21
             </h1>
-            <FaTrash className="text-[14px] text-[#aaa]" />
+            <div className="flex ml-auto items-center">
+              <MdEdit
+                className="text-[16px] text-[#aaa]"
+                onClick={handleOpenModal}
+              />
+              <FaTrash className="text-[14px] text-[#aaa] ml-[10px]" />
+            </div>
           </div>
         </div>
       </div>
       <button
         onClick={handleMoreClick}
-        className="w-full flex bg-[#f1f1f1] rounded-[10px] py-[10px] my-[5px] justify-center items-center text-center font-7bold text-[18px] text-[#686D76] mt-[5px]"
+        className="w-full flex bg-[#f1f1f1] rounded-[10px] py-[10px] mt-[5px] mb-[30px] justify-center items-center text-center font-7bold text-[18px] text-[#686D76] mt-[5px]"
       >
         더보기
       </button>
+
+      <TransactionEditModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );
 };

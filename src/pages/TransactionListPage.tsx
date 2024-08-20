@@ -1,11 +1,24 @@
+import { MdEdit } from 'react-icons/md';
 import { IoIosArrowBack } from 'react-icons/io';
 import { FaTrash } from 'react-icons/fa6';
 import { TbArrowsSort } from 'react-icons/tb';
 
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import TransactionEditModal from '../components/TransactionEditModal';
 
 const TransactionListPage = () => {
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   const handleBackClick = () => {
     navigate('/my');
@@ -43,7 +56,13 @@ const TransactionListPage = () => {
               <h1 className="font-4regular text-[12px] text-[#aaa]">
                 2024.08.21
               </h1>
-              <FaTrash className="text-[14px] text-[#aaa]" />
+              <div className="flex ml-auto items-center">
+                <MdEdit
+                  className="text-[16px] text-[#aaa]"
+                  onClick={handleOpenModal}
+                />
+                <FaTrash className="text-[14px] text-[#aaa] ml-[10px]" />
+              </div>
             </div>
           </div>
         </div>
@@ -60,7 +79,13 @@ const TransactionListPage = () => {
               <h1 className="font-4regular text-[12px] text-[#aaa]">
                 2024.08.21
               </h1>
-              <FaTrash className="text-[14px] text-[#aaa]" />
+              <div className="flex ml-auto items-center">
+                <MdEdit
+                  className="text-[16px] text-[#aaa]"
+                  onClick={handleOpenModal}
+                />
+                <FaTrash className="text-[14px] text-[#aaa] ml-[10px]" />
+              </div>
             </div>
           </div>
         </div>
@@ -77,7 +102,13 @@ const TransactionListPage = () => {
               <h1 className="font-4regular text-[12px] text-[#aaa]">
                 2024.08.21
               </h1>
-              <FaTrash className="text-[14px] text-[#aaa]" />
+              <div className="flex ml-auto items-center">
+                <MdEdit
+                  className="text-[16px] text-[#aaa]"
+                  onClick={handleOpenModal}
+                />
+                <FaTrash className="text-[14px] text-[#aaa] ml-[10px]" />
+              </div>
             </div>
           </div>
         </div>
@@ -94,7 +125,13 @@ const TransactionListPage = () => {
               <h1 className="font-4regular text-[12px] text-[#aaa]">
                 2024.08.08
               </h1>
-              <FaTrash className="text-[14px] text-[#aaa]" />
+              <div className="flex ml-auto items-center">
+                <MdEdit
+                  className="text-[16px] text-[#aaa]"
+                  onClick={handleOpenModal}
+                />
+                <FaTrash className="text-[14px] text-[#aaa] ml-[10px]" />
+              </div>
             </div>
           </div>
         </div>
@@ -111,11 +148,18 @@ const TransactionListPage = () => {
               <h1 className="font-4regular text-[12px] text-[#aaa]">
                 2024.08.01
               </h1>
-              <FaTrash className="text-[14px] text-[#aaa]" />
+              <div className="flex ml-auto items-center">
+                <MdEdit
+                  className="text-[16px] text-[#aaa]"
+                  onClick={handleOpenModal}
+                />
+                <FaTrash className="text-[14px] text-[#aaa] ml-[10px]" />
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <TransactionEditModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );
 };
