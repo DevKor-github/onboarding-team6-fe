@@ -1,9 +1,10 @@
-import apiClient from './apiClient';
+import apiClientIntercept from './apiClientIntercept';
 import { UserProfileResponse } from './types';
 
 export const getUserProfile = async (): Promise<UserProfileResponse> => {
   try {
-    const response = await apiClient.get<UserProfileResponse>('/user/me');
+    const response =
+      await apiClientIntercept.get<UserProfileResponse>('/user/me');
     return response.data;
   } catch (error: any) {
     throw new Error(
@@ -20,7 +21,10 @@ export const updateUserProfile = async (data: {
   password: string;
 }): Promise<UserProfileResponse> => {
   try {
-    const response = await apiClient.put<UserProfileResponse>('/user/me', data);
+    const response = await apiClientIntercept.put<UserProfileResponse>(
+      '/user/me',
+      data
+    );
     return response.data;
   } catch (error: any) {
     throw new Error(

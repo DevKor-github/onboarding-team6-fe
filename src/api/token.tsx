@@ -1,4 +1,4 @@
-import axios from 'axios';
+import apiClient from './apiClient';
 
 const TOKEN_EXPIRY_TIME = 60 * 1000;
 
@@ -28,8 +28,8 @@ export const refreshingToken = async (): Promise<string> => {
   const refresh_token = getCookie('refresh_token');
   if (!refresh_token) throw new Error('리프레시 토큰이 없습니다.');
 
-  const response = await axios.post<{ access_token: string }>(
-    'http://localhost:4000/auth/refresh',
+  const response = await apiClient.post<{ access_token: string }>(
+    '/auth/refresh',
     {
       refreshToken: refresh_token,
     }
