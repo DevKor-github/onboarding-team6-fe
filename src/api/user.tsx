@@ -1,6 +1,7 @@
 import apiClientIntercept from './apiClientIntercept';
-import { UserProfileResponse } from './types';
+import { AuthResponse, UserProfileResponse } from './types';
 
+// 프로필 정보 조회
 export const getUserProfile = async (): Promise<UserProfileResponse> => {
   try {
     const response =
@@ -14,7 +15,7 @@ export const getUserProfile = async (): Promise<UserProfileResponse> => {
   }
 };
 
-// 프로필 정보를 수정하는 함수
+// 프로필 정보 수정
 export const updateUserProfile = async (data: {
   bio: string;
   username: string;
@@ -25,6 +26,19 @@ export const updateUserProfile = async (data: {
       '/user/me',
       data
     );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message ||
+        '프로필 정보를 수정하는 중 오류가 발생했습니다.'
+    );
+  }
+};
+
+// 탈퇴
+export const withdraw = async (): Promise<AuthResponse> => {
+  try {
+    const response = await apiClientIntercept.delete<AuthResponse>('/user/me');
     return response.data;
   } catch (error: any) {
     throw new Error(

@@ -2,6 +2,7 @@ import apiClient from './apiClient';
 import { RegisterPayload, LoginPayload, AuthResponse } from './types';
 import { setCookies } from './token';
 
+// 회원가입
 export const registerUser: (
   data: RegisterPayload
 ) => Promise<AuthResponse> = async (data) => {
@@ -19,6 +20,7 @@ export const registerUser: (
   }
 };
 
+// 로그인
 export const loginUser: (data: LoginPayload) => Promise<AuthResponse> = async (
   data
 ) => {

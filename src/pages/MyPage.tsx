@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
-
 import { MdEdit } from 'react-icons/md';
 import { FaTrash } from 'react-icons/fa6';
+import { IoSettingsSharp } from 'react-icons/io5';
+
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserProfileResponse } from '../api/types';
 import { getUserProfile } from '../api/user';
@@ -27,6 +28,10 @@ const MyPage = () => {
     navigate('/editprofile');
   };
 
+  const handleSettingClick = () => {
+    navigate('/setting');
+  };
+
   const handleAddExpenseClick = () => {
     navigate('/addexpense');
   };
@@ -43,13 +48,17 @@ const MyPage = () => {
     <div className="bg-white flex flex-col items-center px-[20px]">
       <div className="w-[200px] h-[200px] bg-[#D9D9D9] rounded-full my-[30px]"></div>
       <div className="w-full flex justify-between items-center">
-        <div className="flex items-center">
+        <div className="w-full flex items-center">
           <h1 className="text-[24px] text-black font-8extrabold mr-[6px]">
             프로필
           </h1>
           <MdEdit
             className="text-[24px] text-[#A9A9A9] cursor-pointer"
             onClick={handleEditClick}
+          />
+          <IoSettingsSharp
+            className="text-[24px] text-[#A9A9A9] cursor-pointer ml-auto"
+            onClick={handleSettingClick}
           />
         </div>
       </div>
@@ -141,9 +150,6 @@ const MyPage = () => {
       >
         더보기
       </button>
-      <h1 className="w-full text-center text-[#aaa] text-[18px] font-6semibold my-[30px]">
-        로그아웃
-      </h1>
     </div>
   );
 };

@@ -15,6 +15,13 @@ export const getCookie = (name: string): string | undefined => {
   if (parts.length === 2) return parts.pop()?.split(';').shift();
 };
 
+export const logout = () => {
+  document.cookie = 'access_token=; path=/; max-age=0; SameSite=Strict;';
+  document.cookie = 'refresh_token=; path=/; max-age=0; SameSite=Strict;';
+  document.cookie = 'issue_time=; path=/; max-age=0; SameSite=Strict;';
+  window.location.href = '/';
+};
+
 export const isTokenExpired = (): boolean => {
   const issueTime = getCookie('issue_time');
   if (!issueTime) {

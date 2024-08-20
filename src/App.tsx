@@ -13,6 +13,7 @@ import AddIncomePage from './pages/AddIncomePage';
 import TransactionListPage from './pages/TransactionListPage';
 import MemberListPage from './pages/MemberListPage';
 import ProfilePage from './pages/ProfilePage';
+import SettingPage from './pages/SettingPage';
 
 import BeggarRoom from './pages/BeggarRoom';
 import OneOnOneRoom from './pages/OneOnOneRoom';
@@ -34,6 +35,7 @@ function App() {
           <Route path="/memberlist" element={<MemberListPage />} />
           <Route path="/oneononeroom" element={<OneOnOneRoom />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/setting" element={<SettingPage />} />
         </Route>
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
