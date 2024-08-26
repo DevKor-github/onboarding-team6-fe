@@ -1,25 +1,36 @@
 import backgroundImage from '../assets/images/background.jpg';
-import { IoClose, IoLink } from 'react-icons/io5';
+import { IoClose } from 'react-icons/io5';
+import { IoIosCamera } from 'react-icons/io';
+
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
 import { RegisterPayload, AuthResponse } from '../api/types';
-import { registerUser } from '../api/auth';
+import { registerUser, initBalance } from '../api/auth';
+import { setUser } from '../redux/userActions';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [bio, setBio] = useState('');
+  const [balance, setBalance] = useState('');
   const [fileName, setFileName] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const mutation = useMutation<AuthResponse, Error, RegisterPayload>({
     mutationFn: registerUser,
-    onSuccess: (data: AuthResponse) => {
-      console.log('회원가입 성공:', data);
-      navigate('/chattinglist');
+    onSuccess: async (data: AuthResponse) => {
+      dispatch(setUser(data.user));
+      try {
+        await initBalance(username, balance);
+        navigate('/chattinglist');
+      } catch (error) {
+        console.error('잔고 초기화 실패:', error);
+      }
     },
     onError: (error: Error) => {
       console.error('회원가입 실패:', error);
@@ -48,7 +59,7 @@ const RegisterPage = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const profilePicture = 'S3에서 받아온 링크'; // S3 파일 업로드 후 링크를 사용해야 합니다.
+    const profilePicture = 'S3에서 받아온 링크';
 
     const payload: RegisterPayload = {
       username,
@@ -120,13 +131,15 @@ const RegisterPage = () => {
             type="text"
             placeholder="잔고"
             className="font-6semibold text-[18px] w-full p-2 border-2 rounded-[10px] border-[#ccc] bg-transparent mb-[5px] text-black"
+            value={balance}
+            onChange={(e) => setBalance(e.target.value)}
           />
           <div
             className="flex flex-row items-center font-6semibold text-[18px] w-full rounded-[10px] bg-[#ccc] text-white text-left p-2 mb-[5px]"
             onClick={handleFileUploadClick}
           >
-            <IoLink className="mr-2" />
-            프로필 사진 업로드
+            <IoIosCamera className="mr-2 text-[24px] mb-[2px]" />
+            <h1>프로필 사진 업로드</h1>
           </div>
           <input
             type="file"

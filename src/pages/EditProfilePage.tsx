@@ -1,11 +1,16 @@
-import { useState, useEffect } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
+
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+
 import { UserProfileResponse } from '../api/types';
 import { getUserProfile, updateUserProfile } from '../api/user';
+import { updateUser } from '../redux/userActions';
 
 const EditProfilePage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [profile, setProfile] = useState<UserProfileResponse | null>(null);
   const [username, setUsername] = useState('');
   const [bio, setBio] = useState('');
@@ -31,7 +36,8 @@ const EditProfilePage = () => {
 
   const handleSave = async () => {
     try {
-      await updateUserProfile({ bio, username, password: '1111' });
+      await updateUserProfile({ bio, username });
+      await dispatch(updateUser({ bio, username }));
       navigate('/my');
     } catch (error) {
       console.error('프로필 수정 중 오류 발생:', error);

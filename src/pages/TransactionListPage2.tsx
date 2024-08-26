@@ -12,14 +12,11 @@ import { getTransactions, deleteTransaction } from '../api/user';
 import TransactionEditModal from '../components/TransactionEditModal';
 import { RootState } from '../redux/store';
 
-const TransactionListPage = () => {
+const TransactionListPage2 = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { username } = location.state || {};
+  const { username, roomId } = location.state || {};
   const [history, setHistory] = useState<History[]>([]);
-  const [selectedTransaction, setSelectedTransaction] =
-    useState<History | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const userInfo = useSelector((state: RootState) => state.userState.user);
 
   const fetchTransaction = async () => {
@@ -42,34 +39,10 @@ const TransactionListPage = () => {
     fetchTransaction();
   }, []);
 
-  const handleOpenModal = (transaction: History) => {
-    setSelectedTransaction(transaction);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = (refresh?: boolean) => {
-    setIsModalOpen(false);
-    if (refresh) {
-      fetchTransaction();
-    }
-  };
-
   const handleBackClick = () => {
-    navigate('/my');
-  };
-
-  const handleTrashClick = async (id: string) => {
-    try {
-      if (!username) return;
-
-      await deleteTransaction(username, id);
-
-      setHistory((prevHistory) =>
-        prevHistory.filter((transaction) => transaction._id !== id)
-      );
-    } catch (error) {
-      console.error('거래 내역 삭제 중 오류 발생:', error);
-    }
+    navigate('/profile', {
+      state: { memberUsername: username, roomId: roomId },
+    });
   };
 
   return (
@@ -115,30 +88,13 @@ const TransactionListPage = () => {
                 <h1 className="font-4regular text-[12px] text-[#aaa]">
                   {new Date(transaction.timestamp).toLocaleDateString()}
                 </h1>
-                {username === userInfo?.username && (
-                  <div className="flex ml-auto items-center">
-                    <MdEdit
-                      className="text-[16px] text-[#aaa]"
-                      onClick={() => handleOpenModal(transaction)}
-                    />
-                    <FaTrash
-                      className="text-[14px] text-[#aaa] ml-[10px]"
-                      onClick={() => handleTrashClick(transaction._id)}
-                    />
-                  </div>
-                )}
               </div>
             </div>
           </div>
         ))}
       </div>
-      <TransactionEditModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        transaction={selectedTransaction!}
-      />
     </div>
   );
 };
 
-export default TransactionListPage;
+export default TransactionListPage2;

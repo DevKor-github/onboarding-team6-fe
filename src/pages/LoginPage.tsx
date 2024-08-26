@@ -1,8 +1,11 @@
+import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import backgroundImage from '../assets/images/background.jpg';
 import { LoginPayload } from '../api/types';
 import { loginUser } from '../api/auth';
+import { setUser } from '../redux/userActions';
+import { RootState } from '../redux/store';
 
 const LoginPage = () => {
   const messages = [
@@ -32,6 +35,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -45,17 +49,16 @@ const LoginPage = () => {
     event.preventDefault();
     setError(null);
 
-    const loginData: LoginPayload = {
+    const loginData = {
       username,
       password,
     };
 
     try {
       const response = await loginUser(loginData);
-      console.log('로그인 성공:', response);
+      await dispatch(setUser(response.user));
       navigate('/chattinglist');
-    } catch (error: any) {
-      console.error('로그인 실패:', error.message);
+    } catch (error) {
       setError('로그인에 실패했습니다. 다시 시도해주세요.');
     }
   };

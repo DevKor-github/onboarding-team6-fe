@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { logout } from '../api/token';
 import { withdraw } from '../api/user';
+import { clearUser } from '../redux/userActions';
 
 const SettingPage = () => {
   const navigate = useNavigate();
@@ -11,7 +12,12 @@ const SettingPage = () => {
     navigate('/my');
   };
 
+  const handleEditPwdClick = () => {
+    navigate('/editpwd');
+  };
+
   const handleLogoutClick = () => {
+    clearUser();
     logout();
   };
 
@@ -31,7 +37,10 @@ const SettingPage = () => {
       </div>
       <div className="h-[10px] bg-[#f1f1f1]" />
       <div className="flex flex-col mt-[20px] px-[20px]">
-        <div className="font-6semibold text-black text-[18px] mb-[20px]">
+        <div
+          className="font-6semibold text-black text-[18px] mb-[20px]"
+          onClick={handleEditPwdClick}
+        >
           비밀번호 변경
         </div>
         <div

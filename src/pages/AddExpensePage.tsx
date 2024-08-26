@@ -1,11 +1,35 @@
 import { IoIosArrowBack } from 'react-icons/io';
+
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+
+import { addTransaction } from '../api/user';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 const AddExpensePage = () => {
   const navigate = useNavigate();
+  const [memo, setMemo] = useState('');
+  const [amount, setAmount] = useState('');
+  const [date, setDate] = useState('');
+  const type = 'spend';
+
+  const userInfo = useSelector((state: RootState) => state.userState.user);
 
   const handleBackClick = () => {
     navigate('/my');
+  };
+
+  const handleSubmit = async () => {
+    if (!userInfo || !userInfo.username) return;
+    const username = userInfo?.username;
+    try {
+      const transactionData = { amount, memo, type, date };
+      await addTransaction(username, transactionData);
+      navigate('/my');
+    } catch (error) {
+      console.error('지출/수입 내역 추가 중 오류 발생:', error);
+    }
   };
 
   return (
@@ -30,6 +54,8 @@ const AddExpensePage = () => {
             type="text"
             placeholder="간단한 설명"
             className="text-black text-[18px] font-4regular flex-grow bg-transparent border-none outline-none resize-none overflow-hidden"
+            value={memo}
+            onChange={(e) => setMemo(e.target.value)}
           />
         </div>
         <div className="w-full flex bg-[#f1f1f1] rounded-[10px] px-[15px] py-[8px] items-start mb-[10px]">
@@ -37,6 +63,8 @@ const AddExpensePage = () => {
             type="text"
             placeholder="금액"
             className="text-black text-[18px] font-4regular flex-grow bg-transparent border-none outline-none resize-none overflow-hidden"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
           />
         </div>
         <div className="w-full flex bg-[#f1f1f1] rounded-[10px] px-[15px] py-[8px] items-start mb-[10px]">
@@ -44,9 +72,14 @@ const AddExpensePage = () => {
             type="date"
             placeholder="날짜"
             className="text-black text-[18px] font-4regular flex-grow bg-transparent border-none outline-none resize-none overflow-hidden"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
           />
         </div>
-        <button className="w-full flex bg-[#8C6A5D] justify-center items-center rounded-[10px] font-7bold text-white text-[18px] p-2">
+        <button
+          onClick={handleSubmit}
+          className="w-full flex bg-[#8C6A5D] justify-center items-center rounded-[10px] font-7bold text-white text-[18px] p-2"
+        >
           저장하기
         </button>
       </div>
